@@ -4,4 +4,3 @@ real_data, metadata = download_demo(
     modality='multi_table',
     dataset_name='fake_hotels'
 )
-
