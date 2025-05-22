@@ -5,16 +5,19 @@ import pyodbc
 df = pd.read_csv("/Users/saikrishnareddy/onlinefraud.csv")
 
 # SQL Server connection
+import pyodbc
+
 sql_conn = pyodbc.connect(
-    'DRIVER={ODBC Driver 18 for SQL Server};'
-    'SERVER=sf-coe-sql-server.database.windows.net,1433;'
-    'DATABASE=coe-dev-db;'
-    'UID=saikrishna_c;'
-    'PWD=SaiPassword#2025;'
+    'Driver={ODBC Driver 18 for SQL Server};'
+    'Server=tcp:sf-coe-sql-server.database.windows.net,1433;'
+    'Database=coe-dev-db;'
+    'Uid=coeadmin;'
+    'Pwd=SaiPassword#2025;'
     'Encrypt=yes;'
     'TrustServerCertificate=no;'
     'Connection Timeout=30;'
 )
+
 
 cursor = sql_conn.cursor()
 
