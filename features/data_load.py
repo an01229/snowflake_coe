@@ -36,7 +36,7 @@ sql_conn.commit()
 # Insert data
 for index, row in df.iterrows():
     cursor.execute(
-        "INSERT INTO your_table (step, type, amount, nameOrig, oldbalanceOrg, newbalanceOrig, nameDest, oldbalanceDest, newbalanceDest, isFraud, isFlaggedFraud) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        "INSERT INTO online_payment_fraud_detection (step, type, amount, nameOrig, oldbalanceOrg, newbalanceOrig, nameDest, oldbalanceDest, newbalanceDest, isFraud, isFlaggedFraud) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         row['step'], row['type'], row['amount'], row['nameOrig'],
         row['oldbalanceOrg'], row['newbalanceOrig'], row['nameDest'],
         row['oldbalanceDest'], row['newbalanceDest'],
