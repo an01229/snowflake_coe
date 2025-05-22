@@ -10,7 +10,10 @@ sql_conn = pyodbc.connect(
     'SERVER=sf-coe-sql-server.database.windows.net,1433;'
     'DATABASE=coe-dev-db;'
     'UID=saikrishna_c;'
-    'PWD=SaiPassword#2025'
+    'PWD=SaiPassword#2025;'
+    'Encrypt=yes;'
+    'TrustServerCertificate=no;'
+    'Connection Timeout=30;'
 )
 
 cursor = sql_conn.cursor()
