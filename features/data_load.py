@@ -17,6 +17,11 @@ cursor = sql_conn.cursor()
 
 # Optional: Create table (adjust columns to match your CSV)
 cursor.execute("""
+-- Drop the table if it exists
+IF OBJECT_ID('online_payment_fraud_detection', 'U') IS NOT NULL
+    DROP TABLE online_payment_fraud_detection;
+-- Create the table with appropriate data types
+-- Adjust the data types based on your CSV file
 CREATE TABLE online_payment_fraud_detection (
     step INT,
     type VARCHAR(100),
@@ -46,3 +51,4 @@ sql_conn.commit()
 
 cursor.close()
 sql_conn.close()
+
