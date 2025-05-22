@@ -11,11 +11,12 @@ sql_conn = pyodbc.connect(
     'Driver={ODBC Driver 18 for SQL Server};'
     'Server=tcp:sf-coe-sql-server.database.windows.net,1433;'
     'Database=coe-dev-db;'
-    'Uid=coeadmin;'
+    'Uid=saikrishna_c;'
     'Pwd=SaiPassword#2025;'
     'Encrypt=yes;'
     'TrustServerCertificate=no;'
     'Connection Timeout=30;'
+    'Authentication=ActiveDirectoryPassword'
 )
 
 
