@@ -7,7 +7,7 @@ df = pd.read_csv("/Users/saikrishnareddy/onlinefraud.csv")
 # SQL Server connection
 sql_conn = pyodbc.connect(
     'DRIVER={ODBC Driver 18 for SQL Server};'
-    'SERVER=sf-coe-sql-server.database.windows.net;'
+    'SERVER=sf-coe-sql-server.database.windows.net,1433;'
     'DATABASE=coe-dev-db;'
     'UID=saikrishna_c;'
     'PWD=SaiPassword#2025'
