@@ -1,44 +1,83 @@
 from snowflake.snowpark import Session
-from snowflake.snowpark.functions import col
+from snowflake.snowpark.functions import col, upper, when
 import pandas as pd
 import pyodbc
 
-# Step 1: SQL Server Connection
-sql_conn = pyodbc.connect(
-    'DRIVER={ODBC Driver 18 for SQL Server};'
-    'SERVER=sf-coe-sql-server.database.windows.net,1433;'
-    'DATABASE=coe-dev-db;'
-    'UID=saikrishna_c;'
-    'PWD=SaiPassword#2025;'
-    'Encrypt=yes;'
-    'TrustServerCertificate=no;'
-    'Connection Timeout=30;'
-)
+# Establishing connection to SQL Server
+try:
+    sql_conn = pyodbc.connect(
+        'DRIVER={ODBC Driver 18 for SQL Server};'
+        'SERVER=sf-coe-sql-server.database.windows.net,1433;'
+        'DATABASE=coe-dev-db;'
+        'UID=saikrishna_c;'
+        'PWD=SaiPassword#2025;'
+        'Encrypt=yes;'
+        'TrustServerCertificate=no;'
+        'Connection Timeout=60;'
+    )
+    print("✅ Connected to SQL Server.")
+except Exception as e:
+    print("❌ SQL Server connection failed:", e)
+    exit()
 
-# Step 2: Read from SQL Server table into Pandas
-df = pd.read_sql("SELECT * FROM your_table", sql_conn)
-sql_conn.close()
+# Fetching data from SQL Server
+try:
+    df = pd.read_sql("SELECT * FROM online_payment_fraud_detection", sql_conn)
+    print(f"✅ Retrieved {len(df)} records from SQL Server.")
+    sql_conn.close()
+except Exception as e:
+    print("❌ Failed to fetch data from SQL Server:", e)
+    exit()
 
-# Step 3: Snowflake Snowpark Session Config
+
 snowflake_config = {
-    "account": "your_account_id",
-    "user": "your_user",
-    "password": "your_password",
-    "role": "your_role",
-    "warehouse": "your_warehouse",
-    "database": "your_database",
-    "schema": "your_schema"
+    "account": "ANBLICKSORG-ANBLICKSPARTNER.us-east-2",          # e.g., "xy12345.us-east-1"
+    "user": "saikrishna.c",
+    "password": "SaiPassword#2025",
+    "role": "COE_DEV_ROLE",
+    "warehouse": "ANBLICKS_H2S_WH",
+    "database": "COE_DATABASE",
+    "schema": "COE_POC_SCHEMA"
 }
-session = Session.builder.configs(snowflake_config).create()
 
-# Step 4: Load DataFrame into Snowflake Table
-session.write_pandas(
-    df=df,
-    table_name="your_target_table",
-    auto_create_table=True,  # set to False if table already exists
-    overwrite=True           # or append=True to keep existing data
-)
+#Establishing snowflake session
+try:
+    session = Session.builder.configs(snowflake_config).create()
+    print("✅ Connected to Snowflake.")
+except Exception as e:
+    print("❌ Snowflake connection failed:", e)
+    exit()
 
-print("Data loaded into Snowflake successfully.")
+# Write data ti snowflake staging table
+try:
+    session.write_pandas(
+        df=df,
+        table_name="online_payment_fraud_staging",
+        auto_create_table=True,
+        overwrite=True
+    )
+    print("✅ Data written to staging table.")
+except Exception as e:
+    print("❌ Failed to write to Snowflake:", e)
+    session.close()
+    exit()
+
+# Adding transformation columns and writing to final curate table
+try:
+    sf_df = session.table("online_payment_fraud_staging")
+
+    print("✅ Loaded data from staging table into Snowflake DataFrame.")
+    transformed_df = (
+        sf_df
+        .with_column("AMOUNT_USD", col("AMOUNT") * 1.0)
+        .with_column("TYPE_UPPER", upper(col("TYPE")))
+        .with_column("IS_HIGH_VALUE", when(col("AMOUNT") > 10000, 1).otherwise(0))
+    )
+    
+    transformed_df.write.mode("overwrite").save_as_table("online_payment_fraud_final")
+    print("✅ Final transformed data written to Snowflake.")
+
+except Exception as e:
+    print("❌ Transformation failed:", e)
 
 session.close()
