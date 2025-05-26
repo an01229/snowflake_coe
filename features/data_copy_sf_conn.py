@@ -31,7 +31,7 @@ except Exception as e:
 
 
 snowflake_config = {
-    "account": "ANBLICKSORG-ANBLICKSPARTNER.us-east-2",          # e.g., "xy12345.us-east-1"
+    "account": "ANBLICKSORG-ANBLICKSPARTNER.us-east-2.azure",          # e.g., "xy12345.us-east-1"
     "user": "saikrishna.c",
     "password": "SaiPassword#2025",
     "role": "COE_DEV_ROLE",
@@ -73,7 +73,7 @@ try:
         .with_column("TYPE_UPPER", upper(col("TYPE")))
         .with_column("IS_HIGH_VALUE", when(col("AMOUNT") > 10000, 1).otherwise(0))
     )
-    
+
     transformed_df.write.mode("overwrite").save_as_table("online_payment_fraud_final")
     print("✅ Final transformed data written to Snowflake.")
 
