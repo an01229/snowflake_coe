@@ -5,7 +5,7 @@ import pyodbc
 df = pd.read_csv("/Users/saikrishnareddy/onlinefraud.csv")
 
 # Break data into batches
-batch_size = 100000
+batch_size = 10000
 data_batches = [df.iloc[i:i+batch_size] for i in range(0, len(df), batch_size)]
 
 # Connection string
