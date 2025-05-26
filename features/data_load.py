@@ -4,11 +4,11 @@ import pyodbc
 # Load CSV
 df = pd.read_csv("/Users/saikrishnareddy/onlinefraud.csv")
 
+# Convert DataFrame to list of tuples for fast insertion
+data = list(df.itertuples(index=False, name=None))
 
-
-
-try:
-    connection_string = (
+# Connection string
+connection_string = (
     'Driver={ODBC Driver 18 for SQL Server};'
     'Server=tcp:sf-coe-sql-server.database.windows.net,1433;'
     'Database=coe-dev-db;'
@@ -17,59 +17,53 @@ try:
     'Encrypt=yes;'
     'TrustServerCertificate=no;'
     'Connection Timeout=60;'
-    #'Authentication=ActiveDirectoryPassword'
-    )
-    # Establish the connection
+)
+
+try:
+    # Connect
     print("Connecting to the database...")
     conn = pyodbc.connect(connection_string)
     print("Connection successful!")
     cursor = conn.cursor()
 
-    # Example query
-    cursor.execute("SELECT name FROM sys.databases;")
-    for row in cursor.fetchall():
-        print(row)
-    
-    # Close the connection
-    #conn.close()
+    # Create table if not exists
+    cursor.execute("""
+    IF OBJECT_ID('online_payment_fraud_detection', 'U') IS NOT NULL
+        DROP TABLE online_payment_fraud_detection;
+
+    CREATE TABLE online_payment_fraud_detection (
+        step INT,
+        type VARCHAR(100),
+        amount DECIMAL(10, 2),
+        nameOrig VARCHAR(100),
+        oldbalanceOrg DECIMAL(10, 2),
+        newbalanceOrig DECIMAL(10, 2),
+        nameDest VARCHAR(100),
+        oldbalanceDest DECIMAL(10, 2),
+        newbalanceDest DECIMAL(10, 2),
+        isFraud INT,
+        isFlaggedFraud INT
+    )
+    """)
+    conn.commit()
+
+    # Use fast batch insert
+    insert_sql = """
+    INSERT INTO online_payment_fraud_detection (
+        step, type, amount, nameOrig, oldbalanceOrg,
+        newbalanceOrig, nameDest, oldbalanceDest,
+        newbalanceDest, isFraud, isFlaggedFraud
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    """
+
+    print("Inserting data (this may take a few minutes)...")
+    cursor.executemany(insert_sql, data)
+    conn.commit()
+    print(f"Inserted {len(data)} records successfully!")
+
+    # Close connections
+    cursor.close()
+    conn.close()
 
 except Exception as e:
-    print("Connection failed:", e)
-
-
-cursor.execute("""
---Drop the table if it exists
-IF OBJECT_ID('online_payment_fraud_detection', 'U') IS NOT NULL
-    DROP TABLE online_payment_fraud_detection;
---Create the table with appropriate data types
--- Adjust the data types based on your CSV file
-CREATE TABLE online_payment_fraud_detection (
-    step INT,
-    type VARCHAR(100),
-    amount DECIMAL(10, 2),
-    nameOrig VARCHAR(100),
-    oldbalanceOrg DECIMAL(10, 2),
-    newbalanceOrig DECIMAL(10, 2),
-    nameDest VARCHAR(100),
-    oldbalanceDest DECIMAL(10, 2),
-    newbalanceDest DECIMAL(10, 2),
-    isFraud INT,
-    isFlaggedFraud INT
-)
-""")
-connection_string.commit()
-
-# Insert data
-for index, row in df.iterrows():
-    cursor.execute(
-        "INSERT INTO online_payment_fraud_detection (step, type, amount, nameOrig, oldbalanceOrg, newbalanceOrig, nameDest, oldbalanceDest, newbalanceDest, isFraud, isFlaggedFraud) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-        row['step'], row['type'], row['amount'], row['nameOrig'],
-        row['oldbalanceOrg'], row['newbalanceOrig'], row['nameDest'],
-        row['oldbalanceDest'], row['newbalanceDest'],
-        row['isFraud'], row['isFlaggedFraud']
-    )
-connection_string.commit()
-
-cursor.close()
-connection_string.close()
-
+    print("Error occurred:", e)
