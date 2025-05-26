@@ -2,9 +2,8 @@ from snowflake.snowpark import Session
 
 snowflake_config = {
     "account": "anblickspartner",
-    "organization": "anblicksorg",             # ✅ add this
-    "region": "us-west-2",                     # ✅ required for SSL match
-    "host": "anblickspartner.anblicksorg.snowflakecomputing.com",  # optional fallback
+    "organization": "anblicksorg",
+    "region": "us-west-2",
     "user": "saikrishna.c",
     "password": "SaiPassword#2025",
     "role": "COE_DEV_ROLE",
@@ -20,3 +19,4 @@ try:
 except Exception as e:
     print("❌ Snowflake connection failed:", e)
     exit()
+
