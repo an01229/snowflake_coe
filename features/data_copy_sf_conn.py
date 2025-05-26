@@ -31,7 +31,7 @@ except Exception as e:
 
 
 snowflake_config = {
-    "account": "anblickspartner.anblicksorg.azure",          # e.g., "xy12345.us-east-1"
+    "account": "anblickspartner.anblicksorg.snowflakecomputing.com.us-west-2",          # e.g., "xy12345.us-east-1"
     "user": "saikrishna.c",
     "password": "SaiPassword#2025",
     "role": "COE_DEV_ROLE",
