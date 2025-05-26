@@ -12,6 +12,7 @@ snowflake_config = {
     "schema": "COE_POC_SCHEMA"
 }
 
+
 try:
     session = Session.builder.configs(snowflake_config).create()
     print("✅ Connected to Snowflake!")
