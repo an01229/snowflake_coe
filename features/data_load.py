@@ -1,11 +1,12 @@
 import pandas as pd
 import pyodbc
 
-# Load CSV
+# Load the CSV
 df = pd.read_csv("/Users/saikrishnareddy/onlinefraud.csv")
 
-# Convert DataFrame to list of tuples for fast insertion
-data = list(df.itertuples(index=False, name=None))
+# Break data into batches
+batch_size = 100000
+data_batches = [df.iloc[i:i+batch_size] for i in range(0, len(df), batch_size)]
 
 # Connection string
 connection_string = (
@@ -16,17 +17,16 @@ connection_string = (
     'Pwd=SaiPassword#2025;'
     'Encrypt=yes;'
     'TrustServerCertificate=no;'
-    'Connection Timeout=60;'
+    'Connection Timeout=120;'  # increased to 120 seconds
 )
 
 try:
-    # Connect
     print("Connecting to the database...")
     conn = pyodbc.connect(connection_string)
     print("Connection successful!")
     cursor = conn.cursor()
 
-    # Create table if not exists
+    # Drop & create table
     cursor.execute("""
     IF OBJECT_ID('online_payment_fraud_detection', 'U') IS NOT NULL
         DROP TABLE online_payment_fraud_detection;
@@ -47,7 +47,7 @@ try:
     """)
     conn.commit()
 
-    # Use fast batch insert
+    # Insert data in batches
     insert_sql = """
     INSERT INTO online_payment_fraud_detection (
         step, type, amount, nameOrig, oldbalanceOrg,
@@ -56,12 +56,14 @@ try:
     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """
 
-    print("Inserting data (this may take a few minutes)...")
-    cursor.executemany(insert_sql, data)
-    conn.commit()
-    print(f"Inserted {len(data)} records successfully!")
+    for i, batch_df in enumerate(data_batches):
+        print(f"Inserting batch {i+1}/{len(data_batches)}")
+        data = list(batch_df.itertuples(index=False, name=None))
+        cursor.executemany(insert_sql, data)
+        conn.commit()
 
-    # Close connections
+    print("All batches inserted successfully.")
+
     cursor.close()
     conn.close()
 
