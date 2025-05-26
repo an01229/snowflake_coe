@@ -3,7 +3,7 @@ import urllib
 import pandas as pd
 
 params = urllib.parse.quote_plus(
-    "DRIVER={ODBC Driver 17 for SQL Server};"
+    "DRIVER={ODBC Driver 18 for SQL Server};"
     "SERVER=sf-coe-sql-server.database.windows.net;"
     "DATABASE=coe-dev-db;"
     "UID=saikrishna_c;"
