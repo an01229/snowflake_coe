@@ -5,7 +5,10 @@ import pyodbc
 df = pd.read_csv("/Users/saikrishnareddy/onlinefraud.csv")
 
 
-connection_string = (
+
+
+try:
+    connection_string = (
     'Driver={ODBC Driver 18 for SQL Server};'
     'Server=tcp:sf-coe-sql-server.database.windows.net,1433;'
     'Database=coe-dev-db;'
@@ -15,9 +18,8 @@ connection_string = (
     'TrustServerCertificate=no;'
     'Connection Timeout=60;'
     #'Authentication=ActiveDirectoryPassword'
-)
-
-try:
+    )
+    # Establish the connection
     print("Connecting to the database...")
     conn = pyodbc.connect(connection_string)
     print("Connection successful!")
@@ -29,17 +31,17 @@ try:
         print(row)
     
     # Close the connection
-    conn.close()
+    #conn.close()
 
 except Exception as e:
     print("Connection failed:", e)
 
 
 cursor.execute("""
--- Drop the table if it exists
+--Drop the table if it exists
 IF OBJECT_ID('online_payment_fraud_detection', 'U') IS NOT NULL
     DROP TABLE online_payment_fraud_detection;
--- Create the table with appropriate data types
+--Create the table with appropriate data types
 -- Adjust the data types based on your CSV file
 CREATE TABLE online_payment_fraud_detection (
     step INT,
