@@ -3,7 +3,7 @@ from snowflake.snowpark import Session
 snowflake_config = {
     "account": "anblicksorg-anblickspartner",
     "user": "saikrishna.c",
-    "password": "SaiPassword#2025",
+    "password": "Captainmaverick#0044",
     "role": "COE_DEV_ROLE",
     "warehouse": "ANBLICKS_H2S_WH",
     "database": "COE_DATABASE",
