@@ -1,9 +1,7 @@
 from snowflake.snowpark import Session
 
 snowflake_config = {
-    "account": "anblickspartner",
-    "organization": "anblicksorg",
-    "region": "us-west-2",
+    "account": "anblickspartner.us-west-2",
     "user": "saikrishna.c",
     "password": "SaiPassword#2025",
     "role": "COE_DEV_ROLE",
