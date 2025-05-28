@@ -1,0 +1,20 @@
+rdbms:
+  type: sqlserver
+  host: sf-coe-sql-server.database.windows.net
+  port: 1433
+  database: coe-dev-db
+  username: saikrishna_c
+  password: "SaiPassword#2025"
+  driver: ODBC Driver 18 for SQL Server
+  table: online_payment_fraud_detection
+
+snowflake:
+  account: ANBLICKSORG-ANBLICKSPARTNER
+  user: saikrishna.c
+  password: "SaiPassword#2025"
+  role: COE_DEV_ROLE
+  warehouse: ANBLICKS_H2S_WH
+  database: COE_DATABASE
+  schema: COE_POC_SCHEMA
+  raw_table: STAGING_ONLINE_PAYMENT
+  transformed_table: FINAL_FRAUD_TRANSACTIONS
