@@ -20,7 +20,7 @@ def build_sqlalchemy_conn_str(rdbms):
 
 # Fetch data from source
 def fetch_data(sql_engine, table):
-    print("📥 Fetching data from RDBMS...")
+    print("Fetching data from RDBMS...")
     df = pd.read_sql(f"SELECT * FROM {table}", sql_engine)
     print(f"✅ Retrieved {len(df)} records.")
     return df
@@ -46,10 +46,10 @@ def run_data_load_engine(config):
     df = fetch_data(sql_engine, rdbms['table'])
 
     session = get_snowflake_session(sf)
-    print("🔗 Connected to Snowflake.")
+    print("Connected to Snowflake.")
 
     session.write_pandas(df, sf['raw_table'], auto_create_table=True, overwrite=True)
-    print(f"✅ Data uploaded to Snowflake table: {sf['raw_table']}")
+    print(f"Data uploaded to Snowflake table: {sf['raw_table']}")
 
     raw_df = session.table(sf['raw_table'])
     transformed_df = (
@@ -59,12 +59,12 @@ def run_data_load_engine(config):
     )
 
     transformed_df.write.mode("overwrite").save_as_table(sf['transformed_table'])
-    print(f"✅ Transformed data saved to: {sf['transformed_table']}")
+    print(f"Transformed data saved to: {sf['transformed_table']}")
     session.close()
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("❌ Usage: python rdbms_to_snowflake.py <path_to_config.yaml>")
+        print("Usage: python rdbms_to_snowflake.py <path_to_config.yaml>")
         sys.exit(1)
     
     config_path = sys.argv[1]

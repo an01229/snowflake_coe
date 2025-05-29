@@ -15,18 +15,18 @@ try:
         'TrustServerCertificate=no;'
         'Connection Timeout=60;'
     )
-    print("✅ Connected to SQL Server.")
+    print("Connected to SQL Server.")
 except Exception as e:
-    print("❌ SQL Server connection failed:", e)
+    print("SQL Server connection failed:", e)
     exit()
 
 # Fetching data from SQL Server
 try:
     df = pd.read_sql("SELECT * FROM online_payment_fraud_detection", sql_conn)
-    print(f"✅ Retrieved {len(df)} records from SQL Server.")
+    print(f"Retrieved {len(df)} records from SQL Server.")
     sql_conn.close()
 except Exception as e:
-    print("❌ Failed to fetch data from SQL Server:", e)
+    print("Failed to fetch data from SQL Server:", e)
     exit()
 
 
@@ -43,9 +43,9 @@ snowflake_config = {
 #Establishing snowflake session
 try:
     session = Session.builder.configs(snowflake_config).create()
-    print("✅ Connected to Snowflake.")
+    print("Connected to Snowflake.")
 except Exception as e:
-    print("❌ Snowflake connection failed:", e)
+    print("Snowflake connection failed:", e)
     exit()
 
 # Write data ti snowflake staging table
@@ -56,9 +56,9 @@ try:
         auto_create_table=True,
         overwrite=True
     )
-    print("✅ Data written to staging table.")
+    print("Data written to staging table.")
 except Exception as e:
-    print("❌ Failed to write to Snowflake:", e)
+    print("Failed to write to Snowflake:", e)
     session.close()
     exit()
 
@@ -78,6 +78,6 @@ try:
     print("✅ Final transformed data written to Snowflake.")
 
 except Exception as e:
-    print("❌ Transformation failed:", e)
+    print("Transformation failed:", e)
 
 session.close()
