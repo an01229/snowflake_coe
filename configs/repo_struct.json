@@ -1,25 +1,27 @@
 {
     "snowflake_coe": {
-      "AI_ML": {
-        "config": ["test.csv"],
-        "templates": ["conn_param_template.tf", "conn_param_template.yaml"],
-        "features": [
-          "__init__.py",
-          "main.py",
-          "config_parser.py",
-          "generator.py",
-          "utils.py"
-        ],
-        "scripts": ["config_gen_wrapper.sh"],
-        "DDLs": [],
-        "param": [],
-        "documentation": [],
-        ".gitignore": "",
-        "README.md": "",
-        "requirements.txt": "",
-        "pyproject.toml": ""
+      "AI_ML": {},
+      "Data_engg": {
+        "DB_API_automation": {
+          "config": ["test.csv"],
+          "templates": ["conn_param_template.tf", "conn_param_template.yaml"],
+          "features": [
+            "__init__.py",
+            "main.py",
+            "config_parser.py",
+            "generator.py",
+            "utils.py"
+          ],
+          "scripts": ["config_gen_wrapper.sh"],
+          "DDLs": [],
+          "param": [],
+          "documentation": [],
+          ".gitignore": "",
+          "README.md": "",
+          "requirements.txt": "",
+          "pyproject.toml": ""
+        }
       },
-      "Data_engg": {},
       "Analytics": {},
       "Migration": {},
       "common": {
