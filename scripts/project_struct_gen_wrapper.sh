@@ -2,6 +2,8 @@
 
 # Usage: ./project_struct_gen_wrapper.sh -o c -j repo_struct.json
 
+export PYTHON3="~/.pyenv/versions/3.11.8/bin/python3"
+
 while getopts ":o:j:" opt; do
   case $opt in
     o)
@@ -26,4 +28,4 @@ if [[ -z "$OPERATION" || -z "$JSON_FILE" ]]; then
   exit 1
 fi
 
-python3 folder_creation.py -o "$OPERATION" -j "$JSON_FILE"
+$PYTHON3 folder_creation.py -o "$OPERATION" -j "$JSON_FILE"
