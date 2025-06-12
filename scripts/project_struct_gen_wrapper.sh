@@ -28,4 +28,4 @@ if [[ -z "$OPERATION" || -z "$JSON_FILE" ]]; then
   exit 1
 fi
 
-$PYTHON3 folder_creation.py -o "$OPERATION" -j "$JSON_FILE"
+python3 folder_creation.py -o "$OPERATION" -j "$JSON_FILE"
