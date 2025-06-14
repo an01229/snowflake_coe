@@ -82,11 +82,11 @@ def delete_structure(base_path, structure, target_root):
                 # Recurse deeper first
                 delete_structure(path, content, target_root)
 
-            # After recursion, delete the current directory or file
+            # Deleting the current directory or file after recursion
             backup_and_delete(path, target_root)
 
         elif isinstance(content, dict):
-            # Still recurse even if the path doesn't exist (handle partial matches)
+            # Still recurse even if the path doesn't exist
             delete_structure(path, content, target_root)
 
 
@@ -110,17 +110,23 @@ def main():
     with open(args.json_file, 'r') as f:
         structure = json.load(f)
 
-    #Skip the outermost key (e.g., "snowflake_coe")
-    top_level_key = next(iter(structure))
-    adjusted_structure = structure[top_level_key]
+    #Step to check if root key already exists in the target path
+    root_key = next(iter(structure))
+    last_dir = os.path.basename(os.path.normpath(target_path))
 
-    print(f"Starting from target path: {target_path}")
-    print(f"Adjusted structure root: {top_level_key}")
+    if last_dir == root_key:
+        print(f"Skipping root key '{root_key}' since it's already part of the target path")
+        structure_to_use = structure[root_key]
+    else:
+        structure_to_use = structure
+
+    print(f"Final working path: {target_path}")
+    print(f"Structure root: {root_key}")
 
     if args.operation == 'c':
-        create_structure(target_path, adjusted_structure)
+        create_structure(target_path, structure_to_use)
     elif args.operation == 'd':
-        delete_structure(target_path, adjusted_structure, target_path)
+        delete_structure(target_path, structure_to_use, target_path)
 
     log("\n===== SUMMARY =====")
     log(f"Created dirs: {len(created_dirs)}")
