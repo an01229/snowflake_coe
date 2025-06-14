@@ -104,24 +104,22 @@ def main():
     parser.add_argument("-o", "--operation", required=True, choices=["c", "d"], help="Operation: 'c' for create, 'd' for delete")
     parser.add_argument("-t", "--target-path", default=os.getcwd(), help="Target root path where structure will be created or deleted")
 
-
     args = parser.parse_args()
+    target_path = os.path.abspath(args.target_path)
 
     with open(args.json_file, 'r') as f:
         structure = json.load(f)
 
     if args.operation == 'c':
-        project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))  # go 1 level up from script
-        create_structure(project_root, structure)
+        create_structure(target_path, structure)
     elif args.operation == 'd':
-        delete_structure(os.getcwd(), structure)
+        delete_structure(target_path, structure, target_path)  # ✅ fixed line
 
-    log("\n===== Project structure creation summary =====")
-    log(f"Created directories: {len(created_dirs)}")
+    log("\n===== SUMMARY =====")
+    log(f"Created dirs: {len(created_dirs)}")
     log(f"Created files: {len(created_files)}")
     log(f"Skipped: {len(skipped_items)}")
     log(f"Deleted: {len(deleted_items)}")
-
     write_log_to_file()
 
 if __name__ == "__main__":
