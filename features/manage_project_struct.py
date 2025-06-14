@@ -89,6 +89,8 @@ def main():
     parser = argparse.ArgumentParser(description="Create or delete repo structure from JSON.")
     parser.add_argument("-j", "--json_file", required=True, help="Path to the JSON structure file")
     parser.add_argument("-o", "--operation", required=True, choices=["c", "d"], help="Operation: 'c' for create, 'd' for delete")
+    parser.add_argument("-t", "--target-path", default=os.getcwd(), help="Target root path where structure will be created or deleted")
+
 
     args = parser.parse_args()
 
