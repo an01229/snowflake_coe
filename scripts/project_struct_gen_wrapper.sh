@@ -30,5 +30,7 @@ else
   python3 "$SCRIPT_DIR/generate_project_json.py" -d "$DOMAIN" -p "$PROJECT" -o "$TEMP_JSON"
 fi
 
+echo "Target project path passed to project structure manager: $TARGET"
+
 # Call the project structure manager
 python3 "$SCRIPT_DIR/manage_project_struct.py" -o "$OPERATION" -j "$TEMP_JSON" -t "$TARGET"
