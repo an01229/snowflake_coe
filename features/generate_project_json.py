@@ -31,11 +31,9 @@ def load_custom_structure(template_path):
 def generate_json(domain, project, output_file, custom_template=None):
     structure = custom_template if custom_template else DEFAULT_STRUCTURE
     full_structure = {
-        "snowflake_coe": {
             domain: {
                 project: structure
             }
-        }
     }
     script_dir = os.path.dirname(os.path.realpath(__file__))
     output_path = os.path.join(script_dir, output_file)
