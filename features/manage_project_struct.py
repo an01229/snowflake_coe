@@ -110,18 +110,11 @@ def main():
     with open(args.json_file, 'r') as f:
         structure = json.load(f)
 
-    #Step to check if root key already exists in the target path
-    root_key = next(iter(structure))
-    last_dir = os.path.basename(os.path.normpath(target_path))
-
-    if last_dir == root_key:
-        print(f"Skipping root key '{root_key}' since it's already part of the target path")
-        structure_to_use = structure[root_key]
-    else:
-        structure_to_use = structure
-
     print(f"Final working path: {target_path}")
-    print(f"Structure root: {root_key}")
+    print(f"JSON structure top keys: {list(structure.keys())}")
+
+    # Don’t unwrap structure — directly use it now
+    structure_to_use = structure
 
     if args.operation == 'c':
         create_structure(target_path, structure_to_use)
@@ -134,7 +127,6 @@ def main():
     log(f"Skipped: {len(skipped_items)}")
     log(f"Deleted: {len(deleted_items)}")
     write_log_to_file()
-
 
 if __name__ == "__main__":
     main()
