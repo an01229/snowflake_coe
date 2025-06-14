@@ -15,6 +15,8 @@ while getopts ":d:p:t:o:s:" opt; do
   esac
 done
 
+echo "Raw Target path passed: $TARGET"
+
 if [[ -z "$DOMAIN" || -z "$PROJECT" || -z "$OPERATION" ]]; then
   echo "Usage: $0 -d <domain> -p <project> -t <target_path> -o <c|d> [-s <structure_template.json>]"
   exit 1
