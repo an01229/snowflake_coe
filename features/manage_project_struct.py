@@ -110,10 +110,17 @@ def main():
     with open(args.json_file, 'r') as f:
         structure = json.load(f)
 
+    #Skip the outermost key (e.g., "snowflake_coe")
+    top_level_key = next(iter(structure))
+    adjusted_structure = structure[top_level_key]
+
+    print(f"Starting from target path: {target_path}")
+    print(f"Adjusted structure root: {top_level_key}")
+
     if args.operation == 'c':
-        create_structure(target_path, structure)
+        create_structure(target_path, adjusted_structure)
     elif args.operation == 'd':
-        delete_structure(target_path, structure, target_path)  # ✅ fixed line
+        delete_structure(target_path, adjusted_structure, target_path)
 
     log("\n===== SUMMARY =====")
     log(f"Created dirs: {len(created_dirs)}")
@@ -121,6 +128,7 @@ def main():
     log(f"Skipped: {len(skipped_items)}")
     log(f"Deleted: {len(deleted_items)}")
     write_log_to_file()
+
 
 if __name__ == "__main__":
     main()
