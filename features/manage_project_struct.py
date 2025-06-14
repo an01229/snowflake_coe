@@ -76,10 +76,19 @@ def delete_structure(base_path, structure, target_root):
     for name, content in structure.items():
         path = os.path.join(base_path, name)
         print(f"Checking for deletion: {path}")
+        
         if os.path.exists(path):
+            if isinstance(content, dict):
+                # Recurse deeper first
+                delete_structure(path, content, target_root)
+
+            # After recursion, delete the current directory or file
             backup_and_delete(path, target_root)
+
         elif isinstance(content, dict):
+            # Still recurse even if the path doesn't exist (handle partial matches)
             delete_structure(path, content, target_root)
+
 
 
 def write_log_to_file():
