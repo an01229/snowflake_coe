@@ -72,11 +72,15 @@ def backup_and_delete(path):
     except Exception as e:
         log(f"Failed to delete {path}: {e}")
 
-def delete_structure(base_path, structure):
-    for name in structure.keys():
+def delete_structure(base_path, structure, target_root):
+    for name, content in structure.items():
         path = os.path.join(base_path, name)
+        print(f"Checking for deletion: {path}")
         if os.path.exists(path):
-            backup_and_delete(path)
+            backup_and_delete(path, target_root)
+        elif isinstance(content, dict):
+            delete_structure(path, content, target_root)
+
 
 def write_log_to_file():
     log_file = "struct_gen_job.log"
