@@ -96,7 +96,8 @@ def main():
         structure = json.load(f)
 
     if args.operation == 'c':
-        create_structure(os.getcwd(), structure)
+        project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))  # go 1 level up from script
+        create_structure(project_root, structure)
     elif args.operation == 'd':
         delete_structure(os.getcwd(), structure)
 

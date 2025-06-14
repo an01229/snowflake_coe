@@ -1,31 +1,34 @@
 #!/bin/bash
 
-# Usage: ./project_struct_gen_wrapper.sh -o c -j repo_struct.json
+# Usage:
+# ./project_struct_gen_wrapper.sh -d Data_engg -p DB_API_testing -t /target/path -o c -s /path/to/template.json
 
-export PYTHON3="~/.pyenv/versions/3.11.8/bin/python3"
-
-while getopts ":o:j:" opt; do
+while getopts ":d:p:t:o:s:" opt; do
   case $opt in
-    o)
-      OPERATION=$OPTARG
-      ;;
-    j)
-      JSON_FILE=$OPTARG
-      ;;
-    \?)
-      echo "Invalid option: -$OPTARG"
-      exit 1
-      ;;
-    :)
-      echo "Option -$OPTARG requires an argument."
-      exit 1
-      ;;
+    d) DOMAIN=$OPTARG ;;
+    p) PROJECT=$OPTARG ;;
+    t) TARGET=$OPTARG ;;
+    o) OPERATION=$OPTARG ;;
+    s) TEMPLATE=$OPTARG ;;
+    \?) echo "Invalid option -$OPTARG" >&2; exit 1 ;;
+    :) echo "Option -$OPTARG requires an argument." >&2; exit 1 ;;
   esac
 done
 
-if [[ -z "$OPERATION" || -z "$JSON_FILE" ]]; then
-  echo "Usage: $0 -o <c|d> -j <json_file>"
+if [[ -z "$DOMAIN" || -z "$PROJECT" || -z "$OPERATION" ]]; then
+  echo "Usage: $0 -d <domain> -p <project> -t <target_path> -o <c|d> [-s <structure_template.json>]"
   exit 1
 fi
 
-python3 /Users/saikrishnareddy/folder_creation.py -o "$OPERATION" -j "$JSON_FILE"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+TEMP_JSON="$SCRIPT_DIR/.generated_project.json"
+
+# Generate JSON using custom structure if provided
+if [[ -n "$TEMPLATE" ]]; then
+  python3 "$SCRIPT_DIR/generate_project_json.py" -d "$DOMAIN" -p "$PROJECT" -o "$TEMP_JSON" -s "$TEMPLATE"
+else
+  python3 "$SCRIPT_DIR/generate_project_json.py" -d "$DOMAIN" -p "$PROJECT" -o "$TEMP_JSON"
+fi
+
+# Call the project structure manager
+python3 "$SCRIPT_DIR/manage_project_struct.py" -o "$OPERATION" -j "$TEMP_JSON" -t "$TARGET"
