@@ -3,7 +3,7 @@ import argparse
 import os
 
 DEFAULT_STRUCTURE = {
-    "config": [],
+    "config": ["test.csv"],
     "templates": ["conn_param_template.tf", "conn_param_template.yaml"],
     "features": [
         "__init__.py",
@@ -13,11 +13,9 @@ DEFAULT_STRUCTURE = {
         "utils.py"
     ],
     "scripts": ["dq_wrapper.sh"],
-    "DDLs": [],
-    "param": [],
-    "documentation": [],
-    "README.md": "",
-    "requirements.txt": ""
+    "DDLs": ["test.sql"],
+    "param": ["test_params.env"],
+    "documentation": ["test.md"],
 }
 
 def load_custom_structure(template_path):
