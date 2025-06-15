@@ -54,10 +54,10 @@ def create_structure(base_path, structure):
                 skipped_items.append(file_path)
                 log(f"Skipped existing file: {file_path}")
 
-def backup_and_delete(path):
+def backup_and_delete(path, target_root):
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    rel_path = os.path.relpath(path, os.getcwd())
-    backup_path = os.path.join(backup_root, f"{rel_path}_{timestamp}")
+    rel_path = os.path.relpath(path, target_root)
+    backup_path = os.path.join(target_root, "__backups", f"{rel_path}_{timestamp}")
 
     os.makedirs(os.path.dirname(backup_path), exist_ok=True)
     try:
@@ -68,9 +68,9 @@ def backup_and_delete(path):
             shutil.copy2(path, backup_path)
             os.remove(path)
         deleted_items.append(path)
-        log(f"Deleted (backup at {backup_path}): {path}")
+        log(f"[-] Deleted (backup at {backup_path}): {path}")
     except Exception as e:
-        log(f"Failed to delete {path}: {e}")
+        log(f"[!] Failed to delete {path}: {e}")
 
 def delete_structure(base_path, structure, target_root):
     for name, content in structure.items():
